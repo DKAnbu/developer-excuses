@@ -39,7 +39,9 @@ const EXCUSE =
 const OUTPUT_PATH = "/output/entry.txt";
 
 // Gate validation, mirroring the server gate: /output/entry.txt must be
-// UTF-8 text of 1 to 200 characters, not only whitespace.
+// UTF-8 text of 1 to 200 characters, not only whitespace — and with no
+// leading or trailing whitespace padding, which would waste characters
+// and is never part of the excuse itself.
 function validate(text: string): void {
   if (text.length < 1 || text.length > 200) {
     throw new Error(
@@ -48,6 +50,9 @@ function validate(text: string): void {
   }
   if (text.trim().length === 0) {
     throw new Error("entry must not be only whitespace");
+  }
+  if (text !== text.trim()) {
+    throw new Error("entry must not have leading or trailing whitespace");
   }
   if (text.includes("\n") || text.includes("\r")) {
     throw new Error("entry must be a single line (no newline)");
